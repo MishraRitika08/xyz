@@ -1,9 +1,10 @@
 import streamlit as st
-from pdf_processor import process_pdf
+from utils.pdf_processor import process_pdf
+from utils.llm import get_answer
 
 #app
 st.title("Welcome to llm-chat assistant")
-st.header("Upload your pdf and ask questions about it")
+st.subheader("Upload your pdf and ask questions about it")
 upload = st.file_uploader("Upload your pdf", type = ".pdf")
 
 if "messages" not in  st.session_state:
@@ -15,7 +16,7 @@ for msg in st.session_state.messages:
         st.write(msg["content"])
 
 if upload:
-    st.write("Your pdf is uploaded successfully start chatting with your pdf")
+    st.write("Your pdf is uploaded successfully")
     vector_db = process_pdf(upload)
     
     prompt = st.chat_input("Ask something about the PDF...", key = "chat_input")
@@ -23,9 +24,11 @@ if upload:
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.write(prompt)
-    
-            response = ".....response that should be coming from llm after processing the pdf and user prompt"
-    
+            response = get_answer(vector_db, prompt)
+
+            # st.session_state.messages.append({"role": "user", "content": prompt})
+            # with st.chat_message("user"):
+            #     st.write(prompt)
             if response:
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 with st.chat_message("assistant"):

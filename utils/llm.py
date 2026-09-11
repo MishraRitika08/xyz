@@ -7,7 +7,7 @@ def get_answer(vectordb, question):
 
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
     completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "system", "content": (
                 "Answer ONLY using the provided context from the PDF. "
