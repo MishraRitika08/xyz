@@ -25,20 +25,4 @@ Upload a PDF and ask questions based on its content.
 
 ## How It Works
 
-PDF
-↓
-Text Extraction
-↓
-Text Chunking
-↓
-Hugging Face Embeddings
-↓
-ChromaDB
-↓
-Similarity Search
-↓
-Relevant Context
-↓
-Groq LLM
-↓
-Answer
+PDF -> Text Extraction -> Text Chunking -> Hugging Face Embeddings -> ChromaDB -> Similarity Search -> Relevant Context -> Groq LLM -> Answer
