@@ -1,36 +1,70 @@
 import streamlit as st
 from utils.pdf_processor import process_pdf
 from utils.llm import get_answer
+st.set_page_config(
+    page_title="ChatPDF",
+    page_icon="📄",
+    layout="wide"
+)
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = {}
+if "vector_dbs" not in st.session_state:
+    st.session_state.vector_dbs = {}
+if "current_pdf" not in st.session_state:
+    st.session_state.current_pdf = None
+
+def uploadPdf(upload):
+    pdf_name = upload.name
+    st.session_state.chat_history[pdf_name] = []
+    new_pdf_vector = process_pdf(upload, pdf_name)
+    st.session_state.vector_dbs[pdf_name] = new_pdf_vector
 
 #app
-st.title("Welcome to llm-chat assistant")
-st.subheader("Upload your pdf and ask questions about it")
-upload = st.file_uploader("Upload your pdf", type = ".pdf")
+with st.container(height = 600, border = True):
+    st.title(":rainbow[📄 ChatPDF]")
+    left, right = st.columns([1,3], gap = "large")
 
-if "messages" not in  st.session_state:
-    st.session_state.messages = []
+    with left:
+        with st.container():
+            st.subheader("Upload your pdf and ask questions about it")
+            upload = st.file_uploader("Upload pdf here", type = ".pdf")
 
-# display past messages
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
+            if upload:
+                if upload.name not in st.session_state.chat_history:
+                    uploadPdf(upload)
+                    st.session_state.current_pdf = upload.name
+                else:
+                    st.session_state.current_pdf = upload.name
+                st.session_state.current_pdf = upload.name
+                st.success("PDF uploaded successfully!", icon="✅")
+                st.write(f"name of the uploaded file: {upload.name}")
 
-if upload:
-    st.write("Your pdf is uploaded successfully")
-    vector_db = process_pdf(upload)
-    
-    prompt = st.chat_input("Ask something about the PDF...", key = "chat_input")
-    if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.write(prompt)
-            response = get_answer(vector_db, prompt)
+    with right:
+        if upload:
+            if st.session_state.current_pdf != None:
+                curr = st.session_state.current_pdf
 
-            # st.session_state.messages.append({"role": "user", "content": prompt})
-            # with st.chat_message("user"):
-            #     st.write(prompt)
-            if response:
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                with st.chat_message("assistant"):
-                    st.write(response)
-    
+                st.write(f"💬Currently chatting with: {curr}")
+                # display past messages
+                messages = st.session_state.chat_history.get(curr)
+                for msg in messages:
+                    with st.chat_message(msg["role"]):
+                        st.write(msg["content"])
+                prompt = st.chat_input("Ask something about the PDF...")
+
+                if prompt:
+                    with st.chat_message("user"):
+                        st.write(prompt)
+                    vector_db = st.session_state.vector_dbs[curr] # get the db of this pdf
+                    placeholder = st.empty()
+                    placeholder.markdown(":shimmer[Generating answer...]")
+                    response = get_answer(vector_db, prompt)
+                    placeholder.empty()
+
+                    if response:
+                        with st.chat_message("assistant"):
+                            st.write(response)
+                        messages.append({"role": "user", "content": prompt})
+                        messages.append({"role": "assistant", "content": response})
+        else:
+            st.write("Please upload a PDF to start chatting.")

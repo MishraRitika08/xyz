@@ -5,7 +5,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 
 @st.cache_resource(show_spinner="Reading and indexing your PDF...")
-def process_pdf(upload):
+def process_pdf(upload, name):
     full_text = ""
     reader = PdfReader(upload)
 
@@ -15,9 +15,7 @@ def process_pdf(upload):
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = splitter.split_text(full_text)
-
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    vectordb = Chroma.from_texts(chunks, embedding=embeddings)
-    # st.write(vectordb.similarity_search("Why do some foods spoil faster?", k=3))
+    vectordb = Chroma.from_texts(chunks, embedding=embeddings, collection_name=f"pdf_{name}")
 
     return vectordb

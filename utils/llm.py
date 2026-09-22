@@ -9,8 +9,9 @@ def get_answer(vectordb, question):
     completion = client.chat.completions.create(
         model="openai/gpt-oss-20b",
         messages=[
-            {"role": "system", "content": (
-                "Answer ONLY using the provided context from the PDF. "
+            {"role": "system", 
+             "content": (
+                "Answer ONLY using the provided context from the PDF."
                 "If the answer isn't in the context, say you don't know based on this document."
             )},
             {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"}
