@@ -27,4 +27,6 @@ Upload a PDF and ask questions based on its content.
 
 PDF → Text Extraction → Text Chunking → Embeddings → ChromaDB → Similarity Search → Groq LLM → Answer
 
-## Live Demo(https://ask-your-pdf-questions.streamlit.app/)
+## Live Demo
+
+[🚀 Try Ask Your PDF](https://ask-your-pdf-questions.streamlit.app/)
