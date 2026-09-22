@@ -29,4 +29,4 @@ PDF → Text Extraction → Text Chunking → Embeddings → ChromaDB → Simila
 
 ## Live Demo
 
-[🚀Try ChatPDF](https://ask-your-pdf-questions.streamlit.app/)
+🚀[Try ChatPDF](https://ask-your-pdf-questions.streamlit.app/)
