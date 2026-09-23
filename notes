@@ -1,0 +1,9 @@
+ChromaDB collection name rules:
+
+Length: 3–512 characters
+Allowed characters: a-z, A-Z, 0-9, ., _, -
+Must start and end with a letter or number
+No spaces
+Cannot contain special characters like /, ?, :, @, etc.
+
+strip("._-") removes ., _, and - only from the beginning and end of the string.

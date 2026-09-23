@@ -3,12 +3,12 @@ from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-
+import re
 @st.cache_resource(show_spinner="Reading and indexing your PDF...")
 def process_pdf(upload, name):
     full_text = ""
     reader = PdfReader(upload)
-
+    name = re.sub(r"[^0-9a-zA-Z]", "_", name)
     for page in reader.pages:
         text = page.extract_text() or ""
         full_text += text.replace("\n", "")

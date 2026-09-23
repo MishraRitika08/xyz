@@ -15,6 +15,7 @@ if "current_pdf" not in st.session_state:
 
 def uploadPdf(upload):
     pdf_name = upload.name
+    st.session_state.current_pdf = pdf_name
     st.session_state.chat_history[pdf_name] = []
     new_pdf_vector = process_pdf(upload, pdf_name)
     st.session_state.vector_dbs[pdf_name] = new_pdf_vector
@@ -30,9 +31,9 @@ with st.container(height = 600, border = True):
             upload = st.file_uploader("Upload pdf here", type = ".pdf")
 
             if upload:
+                
                 if upload.name not in st.session_state.chat_history:
                     uploadPdf(upload)
-                    st.session_state.current_pdf = upload.name
                 else:
                     st.session_state.current_pdf = upload.name
                 st.session_state.current_pdf = upload.name
@@ -43,10 +44,11 @@ with st.container(height = 600, border = True):
         if upload:
             if st.session_state.current_pdf != None:
                 curr = st.session_state.current_pdf
-
                 st.write(f"💬Currently chatting with: {curr}")
                 # display past messages
-                messages = st.session_state.chat_history.get(curr)
+                st.write(st.session_state.current_pdf)
+                st.write(st.session_state.chat_history.get(curr, []))
+                messages = st.session_state.chat_history.get(curr, [])
                 for msg in messages:
                     with st.chat_message(msg["role"]):
                         st.write(msg["content"])
